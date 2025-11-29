@@ -54,8 +54,9 @@ function init() {
 
 // Handle time adjustment
 function handleAdjust(e) {
-    const unit = e.target.dataset.unit;
-    const amount = parseInt(e.target.dataset.amount);
+    const button = e.currentTarget;
+    const unit = button.dataset.unit;
+    const amount = parseInt(button.dataset.amount);
     
     switch(unit) {
         case 'hours':
@@ -105,7 +106,7 @@ function startTimer() {
     state.isRunning = true;
     state.startTime = Date.now();
     state.pausedTime = null;
-    pauseIcon.textContent = '⏸';
+    pauseIcon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
     
     // Start animation loop for smooth progress
     startAnimationLoop();
@@ -165,13 +166,13 @@ function togglePause() {
         state.isRunning = true;
         state.startTime = Date.now();
         state.pausedTime = null;
-        pauseIcon.textContent = '⏸';
+        pauseIcon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
         startAnimationLoop();
     } else if (state.isRunning) {
         // Pause
         state.isRunning = false;
         state.pausedTime = Date.now();
-        pauseIcon.textContent = '▶';
+        pauseIcon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>';
         if (state.animationFrameId) {
             cancelAnimationFrame(state.animationFrameId);
             state.animationFrameId = null;
@@ -181,7 +182,7 @@ function togglePause() {
         const pauseDuration = Date.now() - state.pausedTime;
         state.startTime += pauseDuration;
         state.isRunning = true;
-        pauseIcon.textContent = '⏸';
+        pauseIcon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
         startAnimationLoop();
     }
 }
@@ -189,7 +190,7 @@ function togglePause() {
 // Stop timer
 function stopTimer() {
     state.isRunning = false;
-    pauseIcon.textContent = '▶';
+    pauseIcon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>';
     if (state.intervalId) {
         clearInterval(state.intervalId);
         state.intervalId = null;
