@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Simple PWA Timer - Un timer semplice e professionale">
+    <title>Silly Timer</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Home/Input Page -->
+        <div id="home-page" class="page active">
+            <header>
+                <h1>Silly Timer</h1>
+            </header>
+            
+            <main class="time-input-container">
+                <!-- Hours -->
+                <div class="time-unit">
+                    <span class="unit-label">Ore</span>
+                    <div class="controls">
+                        <button class="btn btn-adjust" data-unit="hours" data-amount="-5">-5</button>
+                        <button class="btn btn-adjust" data-unit="hours" data-amount="-1">-1</button>
+                        <span id="hours-display" class="time-display">00</span>
+                        <button class="btn btn-adjust" data-unit="hours" data-amount="1">+1</button>
+                        <button class="btn btn-adjust" data-unit="hours" data-amount="5">+5</button>
+                    </div>
+                </div>
+                
+                <!-- Minutes -->
+                <div class="time-unit">
+                    <span class="unit-label">Minuti</span>
+                    <div class="controls">
+                        <button class="btn btn-adjust" data-unit="minutes" data-amount="-5">-5</button>
+                        <button class="btn btn-adjust" data-unit="minutes" data-amount="-1">-1</button>
+                        <span id="minutes-display" class="time-display">00</span>
+                        <button class="btn btn-adjust" data-unit="minutes" data-amount="1">+1</button>
+                        <button class="btn btn-adjust" data-unit="minutes" data-amount="5">+5</button>
+                    </div>
+                </div>
+                
+                <!-- Seconds -->
+                <div class="time-unit">
+                    <span class="unit-label">Secondi</span>
+                    <div class="controls">
+                        <button class="btn btn-adjust" data-unit="seconds" data-amount="-5">-5</button>
+                        <button class="btn btn-adjust" data-unit="seconds" data-amount="-1">-1</button>
+                        <span id="seconds-display" class="time-display">00</span>
+                        <button class="btn btn-adjust" data-unit="seconds" data-amount="1">+1</button>
+                        <button class="btn btn-adjust" data-unit="seconds" data-amount="5">+5</button>
+                    </div>
+                </div>
+                
+                <button id="start-btn" class="btn btn-primary">Avvia</button>
+            </main>
+        </div>
+        
+        <!-- Timer Page -->
+        <div id="timer-page" class="page">
+            <main class="timer-container">
+                <div class="progress-ring-container">
+                    <svg class="progress-ring" viewBox="0 0 200 200">
+                        <circle class="progress-ring-bg" cx="100" cy="100" r="90" />
+                        <circle id="progress-ring-circle" class="progress-ring-circle" cx="100" cy="100" r="90" />
+                    </svg>
+                    <div class="timer-display">
+                        <span id="timer-time">00:00:00</span>
+                    </div>
+                </div>
+                
+                <div class="timer-controls">
+                    <button id="pause-btn" class="btn btn-control">
+                        <span id="pause-icon">⏸</span>
+                    </button>
+                    <button id="home-btn" class="btn btn-control btn-secondary">
+                        <span>🏠</span>
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
