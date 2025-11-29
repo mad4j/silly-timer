@@ -175,10 +175,11 @@ function timerComplete() {
     }
     
     // Change progress ring color to indicate completion
+    const COMPLETION_INDICATOR_DURATION = 3000;
     progressCircle.style.stroke = '#4caf50';
     setTimeout(() => {
         progressCircle.style.stroke = '';
-    }, 3000);
+    }, COMPLETION_INDICATOR_DURATION);
 }
 
 // Go back to home
@@ -197,11 +198,8 @@ function goHome() {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-            .then(registration => {
-                console.log('SW registered:', registration);
-            })
-            .catch(error => {
-                console.log('SW registration failed:', error);
+            .catch(() => {
+                // Service worker registration failed - app will work without offline support
             });
     });
 }
