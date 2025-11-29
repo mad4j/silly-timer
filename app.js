@@ -6,7 +6,10 @@ const state = {
     totalSeconds: 0,
     remainingSeconds: 0,
     isRunning: false,
-    intervalId: null
+    intervalId: null,
+    startTime: null,
+    pausedTime: null,
+    animationFrameId: null
 };
 
 // DOM Elements
@@ -96,28 +99,53 @@ function startTimer() {
     
     // Update display
     updateTimerDisplay();
-    updateProgress();
+    updateProgressSmooth(state.remainingSeconds);
     
     // Start countdown
     state.isRunning = true;
+    state.startTime = Date.now();
+    state.pausedTime = null;
     pauseIcon.textContent = '⏸';
-    state.intervalId = setInterval(tick, 1000);
+    
+    // Start animation loop for smooth progress
+    startAnimationLoop();
 }
 
-// Timer tick
-function tick() {
-    if (!state.isRunning) return;
-    
-    state.remainingSeconds--;
-    
-    if (state.remainingSeconds <= 0) {
-        state.remainingSeconds = 0;
-        stopTimer();
-        timerComplete();
+// Start animation loop for smooth progress
+function startAnimationLoop() {
+    function animate() {
+        if (!state.isRunning) return;
+        
+        const elapsed = (Date.now() - state.startTime) / 1000;
+        const remaining = Math.max(0, state.totalSeconds - elapsed);
+        
+        // Update progress ring continuously
+        updateProgressSmooth(remaining);
+        
+        // Update display every second
+        const newRemainingSeconds = Math.ceil(remaining);
+        if (newRemainingSeconds !== state.remainingSeconds) {
+            state.remainingSeconds = newRemainingSeconds;
+            updateTimerDisplay();
+            
+            if (state.remainingSeconds <= 0) {
+                stopTimer();
+                timerComplete();
+                return;
+            }
+        }
+        
+        state.animationFrameId = requestAnimationFrame(animate);
     }
     
-    updateTimerDisplay();
-    updateProgress();
+    state.animationFrameId = requestAnimationFrame(animate);
+}
+
+// Update progress ring smoothly
+function updateProgressSmooth(remaining) {
+    const progress = remaining / state.totalSeconds;
+    const offset = CIRCUMFERENCE * (1 - progress);
+    progressCircle.style.strokeDashoffset = offset;
 }
 
 // Update timer display
@@ -129,31 +157,32 @@ function updateTimerDisplay() {
     timerTime.textContent = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
 }
 
-// Update progress ring
-function updateProgress() {
-    const progress = state.remainingSeconds / state.totalSeconds;
-    const offset = CIRCUMFERENCE * (1 - progress);
-    progressCircle.style.strokeDashoffset = offset;
-}
-
 // Toggle pause/resume
 function togglePause() {
     if (state.remainingSeconds <= 0) {
         // If timer is complete, restart
         state.remainingSeconds = state.totalSeconds;
         state.isRunning = true;
+        state.startTime = Date.now();
+        state.pausedTime = null;
         pauseIcon.textContent = '⏸';
-        state.intervalId = setInterval(tick, 1000);
+        startAnimationLoop();
     } else if (state.isRunning) {
         // Pause
         state.isRunning = false;
+        state.pausedTime = Date.now();
         pauseIcon.textContent = '▶';
-        clearInterval(state.intervalId);
+        if (state.animationFrameId) {
+            cancelAnimationFrame(state.animationFrameId);
+            state.animationFrameId = null;
+        }
     } else {
-        // Resume
+        // Resume - adjust start time to account for pause duration
+        const pauseDuration = Date.now() - state.pausedTime;
+        state.startTime += pauseDuration;
         state.isRunning = true;
         pauseIcon.textContent = '⏸';
-        state.intervalId = setInterval(tick, 1000);
+        startAnimationLoop();
     }
 }
 
@@ -164,6 +193,10 @@ function stopTimer() {
     if (state.intervalId) {
         clearInterval(state.intervalId);
         state.intervalId = null;
+    }
+    if (state.animationFrameId) {
+        cancelAnimationFrame(state.animationFrameId);
+        state.animationFrameId = null;
     }
 }
 
