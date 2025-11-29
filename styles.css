@@ -1,0 +1,277 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --white: #ffffff;
+    --light-grey: #f5f5f5;
+    --grey: #9e9e9e;
+    --dark-grey: #616161;
+    --blue: #2196f3;
+    --blue-dark: #1976d2;
+    --blue-light: #64b5f6;
+}
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: var(--white);
+    color: var(--dark-grey);
+}
+
+.app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.page {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+}
+
+.page.active {
+    display: flex;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding: 20px 0;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--blue);
+    letter-spacing: 2px;
+}
+
+/* Time Input Container */
+.time-input-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.time-unit {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.unit-label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--grey);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.time-display {
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--dark-grey);
+    min-width: 80px;
+    text-align: center;
+}
+
+/* Buttons */
+.btn {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn-adjust {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--light-grey);
+    color: var(--dark-grey);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.btn-adjust:hover {
+    background-color: var(--blue-light);
+    color: var(--white);
+}
+
+.btn-primary {
+    margin-top: 20px;
+    padding: 16px 60px;
+    border-radius: 30px;
+    background-color: var(--blue);
+    color: var(--white);
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: var(--blue-dark);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+}
+
+.btn-primary:disabled {
+    background-color: var(--grey);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Timer Page */
+.timer-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+.progress-ring-container {
+    position: relative;
+    width: 280px;
+    height: 280px;
+}
+
+.progress-ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.progress-ring-bg {
+    fill: none;
+    stroke: var(--light-grey);
+    stroke-width: 8;
+}
+
+.progress-ring-circle {
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 565.48;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+.timer-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#timer-time {
+    font-size: 2.8rem;
+    font-weight: 300;
+    color: var(--dark-grey);
+    letter-spacing: 2px;
+}
+
+/* Timer Controls */
+.timer-controls {
+    display: flex;
+    gap: 30px;
+}
+
+.btn-control {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: var(--blue);
+    color: var(--white);
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+}
+
+.btn-control:hover {
+    background-color: var(--blue-dark);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+}
+
+.btn-control.btn-secondary {
+    background-color: var(--grey);
+    box-shadow: 0 4px 15px rgba(158, 158, 158, 0.3);
+}
+
+.btn-control.btn-secondary:hover {
+    background-color: var(--dark-grey);
+    box-shadow: 0 6px 20px rgba(158, 158, 158, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 360px) {
+    .time-display {
+        font-size: 2.5rem;
+        min-width: 60px;
+    }
+    
+    .btn-adjust {
+        width: 36px;
+        height: 36px;
+        font-size: 0.8rem;
+    }
+    
+    .controls {
+        gap: 6px;
+    }
+    
+    .progress-ring-container {
+        width: 240px;
+        height: 240px;
+    }
+    
+    #timer-time {
+        font-size: 2.2rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .time-display {
+        font-size: 4rem;
+    }
+    
+    .btn-adjust {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+    
+    .progress-ring-container {
+        width: 320px;
+        height: 320px;
+    }
+    
+    #timer-time {
+        font-size: 3.5rem;
+    }
+}
