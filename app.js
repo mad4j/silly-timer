@@ -21,6 +21,7 @@ const secondsDisplay = document.getElementById('seconds-display');
 const startBtn = document.getElementById('start-btn');
 const pauseBtn = document.getElementById('pause-btn');
 const pauseIcon = document.getElementById('pause-icon');
+const restartBtn = document.getElementById('restart-btn');
 const homeBtn = document.getElementById('home-btn');
 const timerTime = document.getElementById('timer-time');
 const progressCircle = document.getElementById('progress-ring-circle');
@@ -48,6 +49,9 @@ function init() {
     
     // Pause button
     pauseBtn.addEventListener('click', togglePause);
+    
+    // Restart button
+    restartBtn.addEventListener('click', restartTimer);
     
     // Home button
     homeBtn.addEventListener('click', goHome);
@@ -189,6 +193,31 @@ function togglePause() {
         pauseIcon.innerHTML = PAUSE_ICON;
         startAnimationLoop();
     }
+}
+
+// Restart timer to initial time
+function restartTimer() {
+    // Stop current animation
+    if (state.animationFrameId) {
+        cancelAnimationFrame(state.animationFrameId);
+        state.animationFrameId = null;
+    }
+    
+    // Reset to initial time
+    state.remainingSeconds = state.totalSeconds;
+    state.isRunning = true;
+    state.startTime = Date.now();
+    state.pausedTime = null;
+    
+    // Update display
+    updateTimerDisplay();
+    updateProgressSmooth(state.remainingSeconds);
+    
+    // Update pause icon
+    pauseIcon.innerHTML = PAUSE_ICON;
+    
+    // Restart animation loop
+    startAnimationLoop();
 }
 
 // Stop timer

@@ -97,6 +97,17 @@ header h1 {
     cursor: pointer;
     font-family: inherit;
     transition: all 0.2s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
 }
 
 .btn:active {
@@ -116,7 +127,14 @@ header h1 {
     justify-content: center;
 }
 
-.btn-adjust:hover {
+@media (hover: hover) {
+    .btn-adjust:hover {
+        background-color: var(--primary-light);
+        color: var(--white);
+    }
+}
+
+.btn-adjust:active {
     background-color: var(--primary-light);
     color: var(--white);
 }
@@ -133,7 +151,14 @@ header h1 {
     box-shadow: 0 4px 15px rgba(66, 66, 66, 0.3);
 }
 
-.btn-primary:hover {
+@media (hover: hover) {
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        box-shadow: 0 6px 20px rgba(66, 66, 66, 0.4);
+    }
+}
+
+.btn-primary:active {
     background-color: var(--primary-dark);
     box-shadow: 0 6px 20px rgba(66, 66, 66, 0.4);
 }
@@ -215,7 +240,14 @@ header h1 {
     box-shadow: 0 4px 15px rgba(66, 66, 66, 0.3);
 }
 
-.btn-control:hover {
+@media (hover: hover) {
+    .btn-control:hover {
+        background-color: var(--primary-dark);
+        box-shadow: 0 6px 20px rgba(66, 66, 66, 0.4);
+    }
+}
+
+.btn-control:active {
     background-color: var(--primary-dark);
     box-shadow: 0 6px 20px rgba(66, 66, 66, 0.4);
 }
@@ -225,7 +257,14 @@ header h1 {
     box-shadow: 0 4px 15px rgba(158, 158, 158, 0.3);
 }
 
-.btn-control.btn-secondary:hover {
+@media (hover: hover) {
+    .btn-control.btn-secondary:hover {
+        background-color: var(--dark-grey);
+        box-shadow: 0 6px 20px rgba(158, 158, 158, 0.4);
+    }
+}
+
+.btn-control.btn-secondary:active {
     background-color: var(--dark-grey);
     box-shadow: 0 6px 20px rgba(158, 158, 158, 0.4);
 }
