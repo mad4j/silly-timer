@@ -175,6 +175,8 @@ function togglePause() {
         state.startTime = Date.now();
         state.pausedTime = null;
         pauseIcon.innerHTML = PAUSE_ICON;
+        // Reset progress ring color to default (may have been set to green on completion)
+        progressCircle.style.stroke = '';
         startAnimationLoop();
     } else if (state.isRunning) {
         // Pause
