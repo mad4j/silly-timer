@@ -244,6 +244,11 @@ function resetTimer() {
     // Reset to original total time
     state.remainingSeconds = state.totalSeconds;
     
+    // Reset timing state so resume starts from beginning
+    // Both values set to now so that togglePause() calculates zero pause duration
+    state.startTime = Date.now();
+    state.pausedTime = Date.now();
+    
     // Update display
     updateTimerDisplay();
     updateProgressSmooth(state.remainingSeconds);
