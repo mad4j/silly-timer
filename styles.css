@@ -99,6 +99,10 @@ header h1 {
     transition: all 0.2s ease;
 }
 
+.btn svg {
+    pointer-events: none;
+}
+
 .btn:active {
     transform: scale(0.95);
 }
