@@ -255,6 +255,9 @@ function resetTimer() {
     updateTimerDisplay();
     updateProgressSmooth(state.remainingSeconds);
     
+    // Reset progress ring color to default (may have been set to green on completion)
+    progressCircle.style.stroke = '';
+    
     // Set icon to play (paused state)
     pauseIcon.innerHTML = PLAY_ICON;
 }
