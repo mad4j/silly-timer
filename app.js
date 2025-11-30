@@ -22,6 +22,7 @@ const startBtn = document.getElementById('start-btn');
 const pauseBtn = document.getElementById('pause-btn');
 const pauseIcon = document.getElementById('pause-icon');
 const homeBtn = document.getElementById('home-btn');
+const resetBtn = document.getElementById('reset-btn');
 const timerTime = document.getElementById('timer-time');
 const progressCircle = document.getElementById('progress-ring-circle');
 
@@ -51,6 +52,9 @@ function init() {
     
     // Home button
     homeBtn.addEventListener('click', goHome);
+    
+    // Reset button
+    resetBtn.addEventListener('click', resetTimer);
     
     // Update start button state
     updateStartButton();
@@ -230,6 +234,22 @@ function goHome() {
     // Switch pages
     timerPage.classList.remove('active');
     homePage.classList.add('active');
+}
+
+// Reset timer to original time
+function resetTimer() {
+    // Stop any running timer
+    stopTimer();
+    
+    // Reset to original total time
+    state.remainingSeconds = state.totalSeconds;
+    
+    // Update display
+    updateTimerDisplay();
+    updateProgressSmooth(state.remainingSeconds);
+    
+    // Set icon to play (paused state)
+    pauseIcon.innerHTML = PLAY_ICON;
 }
 
 // Register service worker
