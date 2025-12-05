@@ -177,7 +177,9 @@ function updateTimerDisplay() {
     timerTime.textContent = timeString;
     
     // Update percentage
-    const percentage = Math.round((1 - state.remainingSeconds / state.totalSeconds) * 100);
+    const percentage = state.totalSeconds > 0 
+        ? Math.round((1 - state.remainingSeconds / state.totalSeconds) * 100)
+        : 0;
     timerPercentage.textContent = `${percentage}%`;
 }
 
