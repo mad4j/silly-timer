@@ -137,10 +137,20 @@ function startAnimationLoop() {
         // Update remainingSeconds for all cases
         state.remainingSeconds = remaining;
         
+        // Check if timer has completed
+        if (remaining <= 0) {
+            // Force final display update to show 00.000
+            state.remainingSeconds = 0;
+            updateTimerDisplay();
+            stopTimer();
+            timerComplete();
+            return;
+        }
+        
         // Check if we need to show milliseconds (only seconds, no minutes or hours)
         const hours = Math.floor(remaining / 3600);
         const minutes = Math.floor((remaining % 3600) / 60);
-        const showMilliseconds = hours === 0 && minutes === 0 && remaining > 0;
+        const showMilliseconds = hours === 0 && minutes === 0;
         
         if (showMilliseconds) {
             // Throttle millisecond display updates to ~10fps (every 100ms)
@@ -154,12 +164,6 @@ function startAnimationLoop() {
             if (newRemainingSeconds !== Math.ceil(state.remainingSeconds)) {
                 updateTimerDisplay();
             }
-        }
-        
-        if (remaining <= 0) {
-            stopTimer();
-            timerComplete();
-            return;
         }
         
         state.animationFrameId = requestAnimationFrame(animate);
@@ -182,21 +186,21 @@ function updateTimerDisplay() {
     const seconds = Math.floor(state.remainingSeconds % 60);
     
     // Show only significant digits
-    let timeString;
+    let timeHTML;
     if (hours > 0) {
-        timeString = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+        timeHTML = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
     } else if (minutes > 0) {
-        timeString = `${padZero(minutes)}:${padZero(seconds)}`;
+        timeHTML = `${padZero(minutes)}:${padZero(seconds)}`;
     } else {
-        // When only seconds, show milliseconds with 3 decimal places
-        const secondsWithMillis = state.remainingSeconds % 60;
+        // When only seconds, show milliseconds with 3 decimal places in smaller font
+        const secondsWithMillis = Math.max(0, state.remainingSeconds % 60);
         const wholePart = Math.floor(secondsWithMillis);
         const milliseconds = Math.min(999, Math.round((secondsWithMillis - wholePart) * 1000));
         const fractionalPart = milliseconds.toString().padStart(3, '0');
-        timeString = `${padZero(wholePart)}.${fractionalPart}`;
+        timeHTML = `${padZero(wholePart)}<span class="timer-millis">.${fractionalPart}</span>`;
     }
     
-    timerTime.textContent = timeString;
+    timerTime.innerHTML = timeHTML;
     
     // Update percentage
     const percentage = state.totalSeconds > 0 
