@@ -191,6 +191,9 @@ header h1 {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 #timer-time {
@@ -198,6 +201,13 @@ header h1 {
     font-weight: 300;
     color: var(--dark-grey);
     letter-spacing: 2px;
+}
+
+#timer-percentage {
+    font-size: 1rem;
+    font-weight: 300;
+    color: #bdbdbd;
+    letter-spacing: 1px;
 }
 
 /* Timer Controls */
@@ -259,6 +269,10 @@ header h1 {
     #timer-time {
         font-size: 2.2rem;
     }
+    
+    #timer-percentage {
+        font-size: 0.85rem;
+    }
 }
 
 @media (min-width: 768px) {
@@ -279,5 +293,9 @@ header h1 {
     
     #timer-time {
         font-size: 3.5rem;
+    }
+    
+    #timer-percentage {
+        font-size: 1.2rem;
     }
 }

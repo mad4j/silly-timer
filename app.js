@@ -24,6 +24,7 @@ const pauseIcon = document.getElementById('pause-icon');
 const homeBtn = document.getElementById('home-btn');
 const resetBtn = document.getElementById('reset-btn');
 const timerTime = document.getElementById('timer-time');
+const timerPercentage = document.getElementById('timer-percentage');
 const progressCircle = document.getElementById('progress-ring-circle');
 
 // Progress ring constants
@@ -163,7 +164,21 @@ function updateTimerDisplay() {
     const minutes = Math.floor((state.remainingSeconds % 3600) / 60);
     const seconds = state.remainingSeconds % 60;
     
-    timerTime.textContent = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    // Show only significant digits
+    let timeString;
+    if (hours > 0) {
+        timeString = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    } else if (minutes > 0) {
+        timeString = `${padZero(minutes)}:${padZero(seconds)}`;
+    } else {
+        timeString = `${padZero(seconds)}`;
+    }
+    
+    timerTime.textContent = timeString;
+    
+    // Update percentage
+    const percentage = Math.round((1 - state.remainingSeconds / state.totalSeconds) * 100);
+    timerPercentage.textContent = `${percentage}%`;
 }
 
 // Toggle pause/resume
