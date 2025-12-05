@@ -9,7 +9,8 @@ const state = {
     intervalId: null,
     startTime: null,
     pausedTime: null,
-    animationFrameId: null
+    animationFrameId: null,
+    lastMillisecondUpdate: 0
 };
 
 // DOM Elements
@@ -24,6 +25,7 @@ const pauseIcon = document.getElementById('pause-icon');
 const homeBtn = document.getElementById('home-btn');
 const resetBtn = document.getElementById('reset-btn');
 const timerTime = document.getElementById('timer-time');
+const timerPercentage = document.getElementById('timer-percentage');
 const progressCircle = document.getElementById('progress-ring-circle');
 
 // Progress ring constants
@@ -125,22 +127,42 @@ function startAnimationLoop() {
     function animate() {
         if (!state.isRunning) return;
         
-        const elapsed = (Date.now() - state.startTime) / 1000;
+        const now = Date.now();
+        const elapsed = (now - state.startTime) / 1000;
         const remaining = Math.max(0, state.totalSeconds - elapsed);
         
         // Update progress ring continuously
         updateProgressSmooth(remaining);
         
-        // Update display every second
-        const newRemainingSeconds = Math.ceil(remaining);
-        if (newRemainingSeconds !== state.remainingSeconds) {
-            state.remainingSeconds = newRemainingSeconds;
+        // Check if timer has completed
+        if (remaining <= 0) {
+            // Force final display update to show 00.000
+            state.remainingSeconds = 0;
             updateTimerDisplay();
-            
-            if (state.remainingSeconds <= 0) {
-                stopTimer();
-                timerComplete();
-                return;
+            stopTimer();
+            timerComplete();
+            return;
+        }
+        
+        // Update remainingSeconds for all cases
+        state.remainingSeconds = remaining;
+        
+        // Check if we need to show milliseconds (only seconds, no minutes or hours)
+        const hours = Math.floor(remaining / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+        const showMilliseconds = hours === 0 && minutes === 0;
+        
+        if (showMilliseconds) {
+            // Throttle millisecond display updates to ~10fps (every 100ms)
+            if (now - state.lastMillisecondUpdate >= 100) {
+                updateTimerDisplay();
+                state.lastMillisecondUpdate = now;
+            }
+        } else {
+            // Update display every second for minutes/hours
+            const newRemainingSeconds = Math.ceil(remaining);
+            if (newRemainingSeconds !== Math.ceil(state.remainingSeconds)) {
+                updateTimerDisplay();
             }
         }
         
@@ -161,9 +183,30 @@ function updateProgressSmooth(remaining) {
 function updateTimerDisplay() {
     const hours = Math.floor(state.remainingSeconds / 3600);
     const minutes = Math.floor((state.remainingSeconds % 3600) / 60);
-    const seconds = state.remainingSeconds % 60;
+    const seconds = Math.floor(state.remainingSeconds % 60);
     
-    timerTime.textContent = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    // Show only significant digits
+    let timeHTML;
+    if (hours > 0) {
+        timeHTML = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    } else if (minutes > 0) {
+        timeHTML = `${padZero(minutes)}:${padZero(seconds)}`;
+    } else {
+        // When only seconds, show milliseconds with 3 decimal places in smaller font
+        const secondsWithMillis = Math.max(0, state.remainingSeconds % 60);
+        const wholePart = Math.floor(secondsWithMillis);
+        const milliseconds = Math.min(999, Math.round((secondsWithMillis - wholePart) * 1000));
+        const fractionalPart = milliseconds.toString().padStart(3, '0');
+        timeHTML = `${padZero(wholePart)}<span class="timer-millis">.${fractionalPart}</span>`;
+    }
+    
+    timerTime.innerHTML = timeHTML;
+    
+    // Update percentage
+    const percentage = state.totalSeconds > 0 
+        ? Math.round((1 - state.remainingSeconds / state.totalSeconds) * 100)
+        : 0;
+    timerPercentage.textContent = `${percentage}%`;
 }
 
 // Toggle pause/resume
