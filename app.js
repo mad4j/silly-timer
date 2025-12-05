@@ -144,9 +144,6 @@ function startAnimationLoop() {
             return;
         }
         
-        // Update remainingSeconds for all cases
-        state.remainingSeconds = remaining;
-        
         // Check if we need to show milliseconds (only seconds, no minutes or hours)
         const hours = Math.floor(remaining / 3600);
         const minutes = Math.floor((remaining % 3600) / 60);
@@ -155,6 +152,7 @@ function startAnimationLoop() {
         if (showMilliseconds) {
             // Update millisecond display at ~60fps (every 16ms) for smooth visualization
             if (now - state.lastMillisecondUpdate >= 16) {
+                state.remainingSeconds = remaining;
                 updateTimerDisplay();
                 state.lastMillisecondUpdate = now;
             }
@@ -162,6 +160,7 @@ function startAnimationLoop() {
             // Update display every second for minutes/hours
             const newRemainingSeconds = Math.ceil(remaining);
             if (newRemainingSeconds !== Math.ceil(state.remainingSeconds)) {
+                state.remainingSeconds = remaining;
                 updateTimerDisplay();
             }
         }
