@@ -153,8 +153,8 @@ function startAnimationLoop() {
         const showMilliseconds = hours === 0 && minutes === 0;
         
         if (showMilliseconds) {
-            // Throttle millisecond display updates to ~10fps (every 100ms)
-            if (now - state.lastMillisecondUpdate >= 100) {
+            // Update millisecond display at ~60fps (every 16ms) for smooth visualization
+            if (now - state.lastMillisecondUpdate >= 16) {
                 updateTimerDisplay();
                 state.lastMillisecondUpdate = now;
             }
