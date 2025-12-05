@@ -132,17 +132,28 @@ function startAnimationLoop() {
         // Update progress ring continuously
         updateProgressSmooth(remaining);
         
-        // Update display every second
-        const newRemainingSeconds = Math.ceil(remaining);
-        if (newRemainingSeconds !== state.remainingSeconds) {
-            state.remainingSeconds = newRemainingSeconds;
+        // Check if we need to show milliseconds (only seconds, no minutes or hours)
+        const hours = Math.floor(remaining / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+        const showMilliseconds = hours === 0 && minutes === 0 && remaining > 0;
+        
+        if (showMilliseconds) {
+            // Update display every frame for milliseconds
+            state.remainingSeconds = remaining;
             updateTimerDisplay();
-            
-            if (state.remainingSeconds <= 0) {
-                stopTimer();
-                timerComplete();
-                return;
+        } else {
+            // Update display every second for minutes/hours
+            const newRemainingSeconds = Math.ceil(remaining);
+            if (newRemainingSeconds !== state.remainingSeconds) {
+                state.remainingSeconds = newRemainingSeconds;
+                updateTimerDisplay();
             }
+        }
+        
+        if (remaining <= 0) {
+            stopTimer();
+            timerComplete();
+            return;
         }
         
         state.animationFrameId = requestAnimationFrame(animate);
@@ -162,7 +173,7 @@ function updateProgressSmooth(remaining) {
 function updateTimerDisplay() {
     const hours = Math.floor(state.remainingSeconds / 3600);
     const minutes = Math.floor((state.remainingSeconds % 3600) / 60);
-    const seconds = state.remainingSeconds % 60;
+    const seconds = Math.floor(state.remainingSeconds % 60);
     
     // Show only significant digits
     let timeString;
@@ -171,7 +182,11 @@ function updateTimerDisplay() {
     } else if (minutes > 0) {
         timeString = `${padZero(minutes)}:${padZero(seconds)}`;
     } else {
-        timeString = `${padZero(seconds)}`;
+        // When only seconds, show milliseconds with 3 decimal places
+        const secondsWithMillis = state.remainingSeconds % 60;
+        const wholePart = Math.floor(secondsWithMillis);
+        const fractionalPart = (secondsWithMillis - wholePart).toFixed(3).substring(2);
+        timeString = `${padZero(wholePart)}.${fractionalPart}`;
     }
     
     timerTime.textContent = timeString;
