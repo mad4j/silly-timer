@@ -9,7 +9,8 @@ const state = {
     intervalId: null,
     startTime: null,
     pausedTime: null,
-    animationFrameId: null
+    animationFrameId: null,
+    lastMillisecondUpdate: 0
 };
 
 // DOM Elements
@@ -126,7 +127,8 @@ function startAnimationLoop() {
     function animate() {
         if (!state.isRunning) return;
         
-        const elapsed = (Date.now() - state.startTime) / 1000;
+        const now = Date.now();
+        const elapsed = (now - state.startTime) / 1000;
         const remaining = Math.max(0, state.totalSeconds - elapsed);
         
         // Update progress ring continuously
@@ -138,9 +140,15 @@ function startAnimationLoop() {
         const showMilliseconds = hours === 0 && minutes === 0 && remaining > 0;
         
         if (showMilliseconds) {
-            // Update display every frame for milliseconds
-            state.remainingSeconds = remaining;
-            updateTimerDisplay();
+            // Throttle millisecond display updates to ~10fps (every 100ms)
+            if (now - state.lastMillisecondUpdate >= 100) {
+                state.remainingSeconds = remaining;
+                updateTimerDisplay();
+                state.lastMillisecondUpdate = now;
+            } else {
+                // Still update remainingSeconds for progress ring
+                state.remainingSeconds = remaining;
+            }
         } else {
             // Update display every second for minutes/hours
             const newRemainingSeconds = Math.ceil(remaining);
@@ -185,7 +193,8 @@ function updateTimerDisplay() {
         // When only seconds, show milliseconds with 3 decimal places
         const secondsWithMillis = state.remainingSeconds % 60;
         const wholePart = Math.floor(secondsWithMillis);
-        const fractionalPart = (secondsWithMillis - wholePart).toFixed(3).substring(2);
+        const milliseconds = Math.round((secondsWithMillis - wholePart) * 1000);
+        const fractionalPart = milliseconds.toString().padStart(3, '0');
         timeString = `${padZero(wholePart)}.${fractionalPart}`;
     }
     
