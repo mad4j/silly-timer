@@ -89,6 +89,7 @@ header h1 {
     color: var(--dark-grey);
     min-width: 80px;
     text-align: center;
+    font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
 }
 
 /* Buttons */
@@ -201,11 +202,13 @@ header h1 {
     font-weight: 300;
     color: var(--dark-grey);
     letter-spacing: 2px;
+    font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
 }
 
 .timer-millis {
     font-size: 1.8rem;
     font-weight: 300;
+    font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
 }
 
 #timer-percentage {
@@ -213,6 +216,7 @@ header h1 {
     font-weight: 300;
     color: #bdbdbd;
     letter-spacing: 1px;
+    font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
 }
 
 /* Timer Controls */
