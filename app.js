@@ -134,9 +134,6 @@ function startAnimationLoop() {
         // Update progress ring continuously
         updateProgressSmooth(remaining);
         
-        // Update remainingSeconds for all cases
-        state.remainingSeconds = remaining;
-        
         // Check if timer has completed
         if (remaining <= 0) {
             // Force final display update to show 00.000
@@ -146,6 +143,9 @@ function startAnimationLoop() {
             timerComplete();
             return;
         }
+        
+        // Update remainingSeconds for all cases
+        state.remainingSeconds = remaining;
         
         // Check if we need to show milliseconds (only seconds, no minutes or hours)
         const hours = Math.floor(remaining / 3600);
