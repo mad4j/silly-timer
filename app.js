@@ -134,6 +134,9 @@ function startAnimationLoop() {
         // Update progress ring continuously
         updateProgressSmooth(remaining);
         
+        // Update remainingSeconds for all cases
+        state.remainingSeconds = remaining;
+        
         // Check if we need to show milliseconds (only seconds, no minutes or hours)
         const hours = Math.floor(remaining / 3600);
         const minutes = Math.floor((remaining % 3600) / 60);
@@ -142,18 +145,13 @@ function startAnimationLoop() {
         if (showMilliseconds) {
             // Throttle millisecond display updates to ~10fps (every 100ms)
             if (now - state.lastMillisecondUpdate >= 100) {
-                state.remainingSeconds = remaining;
                 updateTimerDisplay();
                 state.lastMillisecondUpdate = now;
-            } else {
-                // Still update remainingSeconds for progress ring
-                state.remainingSeconds = remaining;
             }
         } else {
             // Update display every second for minutes/hours
             const newRemainingSeconds = Math.ceil(remaining);
-            if (newRemainingSeconds !== state.remainingSeconds) {
-                state.remainingSeconds = newRemainingSeconds;
+            if (newRemainingSeconds !== Math.ceil(state.remainingSeconds)) {
                 updateTimerDisplay();
             }
         }
@@ -193,7 +191,7 @@ function updateTimerDisplay() {
         // When only seconds, show milliseconds with 3 decimal places
         const secondsWithMillis = state.remainingSeconds % 60;
         const wholePart = Math.floor(secondsWithMillis);
-        const milliseconds = Math.round((secondsWithMillis - wholePart) * 1000);
+        const milliseconds = Math.min(999, Math.round((secondsWithMillis - wholePart) * 1000));
         const fractionalPart = milliseconds.toString().padStart(3, '0');
         timeString = `${padZero(wholePart)}.${fractionalPart}`;
     }
