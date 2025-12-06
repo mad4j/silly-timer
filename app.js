@@ -322,9 +322,16 @@ function resetTimer() {
 }
 
 // LocalStorage functions for configuration history
+/** @const {string} STORAGE_KEY - The localStorage key for storing timer configuration history */
 const STORAGE_KEY = 'timer-history';
+/** @const {number} MAX_HISTORY - Maximum number of configurations to keep (current + 3 previous for shortcuts) */
 const MAX_HISTORY = 4;
 
+/**
+ * Saves the current timer configuration to localStorage history
+ * Configurations are stored with timestamp, most recent first
+ * Duplicate consecutive configurations update timestamp only
+ */
 function saveConfiguration() {
     const config = {
         hours: state.hours,
@@ -364,6 +371,10 @@ function saveConfiguration() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
 }
 
+/**
+ * Retrieves the configuration history from localStorage
+ * @returns {Array<{hours: number, minutes: number, seconds: number, timestamp: number}>} Array of configuration objects, empty array on error
+ */
 function getConfigurationHistory() {
     try {
         const data = localStorage.getItem(STORAGE_KEY);
@@ -373,21 +384,22 @@ function getConfigurationHistory() {
     }
 }
 
+/**
+ * Loads the most recent configuration from history and updates the display
+ */
 function loadLastConfiguration() {
     const history = getConfigurationHistory();
     if (history.length > 0) {
         const last = history[0];
-        state.hours = last.hours;
-        state.minutes = last.minutes;
-        state.seconds = last.seconds;
-        
-        hoursDisplay.textContent = padZero(state.hours);
-        minutesDisplay.textContent = padZero(state.minutes);
-        secondsDisplay.textContent = padZero(state.seconds);
+        applyConfiguration(last);
     }
 }
 
-function loadConfiguration(config) {
+/**
+ * Applies a configuration to the timer state and updates the display
+ * @param {{hours: number, minutes: number, seconds: number}} config - Configuration to apply
+ */
+function applyConfiguration(config) {
     state.hours = config.hours;
     state.minutes = config.minutes;
     state.seconds = config.seconds;
@@ -399,6 +411,18 @@ function loadConfiguration(config) {
     updateStartButton();
 }
 
+/**
+ * Loads a configuration from a shortcut button click
+ * @param {{hours: number, minutes: number, seconds: number}} config - Configuration to load
+ */
+function loadConfiguration(config) {
+    applyConfiguration(config);
+}
+
+/**
+ * Updates the shortcut buttons with the 3 most recent configurations (excluding current)
+ * Buttons are shown or hidden based on available history
+ */
 function updateShortcutButtons() {
     const history = getConfigurationHistory();
     
@@ -424,6 +448,11 @@ function updateShortcutButtons() {
     }
 }
 
+/**
+ * Formats a configuration time as a compact string
+ * @param {{hours: number, minutes: number, seconds: number}} config - Configuration to format
+ * @returns {string} Formatted time string (e.g., "1h 5m 30s", "2m", "45s")
+ */
 function formatConfigurationTime(config) {
     const parts = [];
     if (config.hours > 0) {
@@ -438,6 +467,11 @@ function formatConfigurationTime(config) {
     return parts.join(' ') || '0s';
 }
 
+/**
+ * Handles click events on shortcut buttons
+ * Loads the configuration stored in the button's data attributes
+ * @param {Event} e - Click event with currentTarget being the button element
+ */
 function handleShortcutClick(e) {
     const button = e.currentTarget;
     const config = {
