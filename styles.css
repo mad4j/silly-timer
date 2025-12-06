@@ -218,10 +218,7 @@ header h1 {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
+    width: 100%;
 }
 
 #timer-time {
@@ -231,8 +228,8 @@ header h1 {
     letter-spacing: 2px;
     font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
     line-height: 1;
-    /* Fine-tune vertical centering to account for percentage text below */
-    margin-top: -0.15em;
+    /* Position so horizontal center of circle cuts through middle of digits */
+    transform: translateY(-50%);
 }
 
 .timer-millis {
@@ -249,6 +246,12 @@ header h1 {
     letter-spacing: 1px;
     font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
     line-height: 1;
+    /* Position percentage below the timer digits */
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    margin-top: 0.2em;
 }
 
 /* Timer Controls */
