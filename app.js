@@ -156,7 +156,7 @@ function startAnimationLoop() {
         
         // Check if timer has completed
         if (remaining <= 0) {
-            // Force final display update to show 00.000
+            // Force final display update to show 00.0
             state.remainingSeconds = 0;
             updateTimerDisplay();
             stopTimer();
@@ -170,7 +170,7 @@ function startAnimationLoop() {
         const showMilliseconds = hours === 0 && minutes === 0;
         
         if (showMilliseconds) {
-            // Update millisecond display at ~60fps (every 16ms) for smooth visualization
+            // Update tenth-second display at ~60fps (every 16ms) for smooth visualization
             if (now - state.lastMillisecondUpdate >= 16) {
                 state.remainingSeconds = remaining;
                 updateTimerDisplay();
@@ -211,12 +211,11 @@ function updateTimerDisplay() {
     } else if (minutes > 0) {
         timeHTML = `${padZero(minutes)}:${padZero(seconds)}`;
     } else {
-        // When only seconds, show milliseconds with 3 decimal places in smaller font
+        // When only seconds, show tenths of a second with 1 decimal place in smaller font
         const secondsWithMillis = Math.max(0, state.remainingSeconds % 60);
         const wholePart = Math.floor(secondsWithMillis);
-        const milliseconds = Math.min(999, Math.round((secondsWithMillis - wholePart) * 1000));
-        const fractionalPart = milliseconds.toString().padStart(3, '0');
-        timeHTML = `${padZero(wholePart)}<span class="timer-millis">.${fractionalPart}</span>`;
+        const tenths = Math.min(9, Math.floor((secondsWithMillis - wholePart) * 10));
+        timeHTML = `${padZero(wholePart)}<span class="timer-millis">.${tenths}</span>`;
     }
     
     timerTime.innerHTML = timeHTML;
