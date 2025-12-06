@@ -31,6 +31,12 @@ const progressCircle = document.getElementById('progress-ring-circle');
 // Progress ring constants
 const CIRCUMFERENCE = 2 * Math.PI * 90;
 
+// LocalStorage constants
+/** @const {string} STORAGE_KEY - The localStorage key for storing timer configuration history */
+const STORAGE_KEY = 'timer-history';
+/** @const {number} MAX_HISTORY - Maximum number of configurations to keep (current + 3 previous for shortcuts) */
+const MAX_HISTORY = 4;
+
 // SVG Icons
 const PAUSE_ICON = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
 const PLAY_ICON = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>';
@@ -322,11 +328,6 @@ function resetTimer() {
 }
 
 // LocalStorage functions for configuration history
-/** @const {string} STORAGE_KEY - The localStorage key for storing timer configuration history */
-const STORAGE_KEY = 'timer-history';
-/** @const {number} MAX_HISTORY - Maximum number of configurations to keep (current + 3 previous for shortcuts) */
-const MAX_HISTORY = 4;
-
 /**
  * Saves the current timer configuration to localStorage history
  * Configurations are stored with timestamp, most recent first
@@ -412,14 +413,6 @@ function applyConfiguration(config) {
 }
 
 /**
- * Loads a configuration from a shortcut button click
- * @param {{hours: number, minutes: number, seconds: number}} config - Configuration to load
- */
-function loadConfiguration(config) {
-    applyConfiguration(config);
-}
-
-/**
  * Updates the shortcut buttons with the 3 most recent configurations (excluding current)
  * Buttons are shown or hidden based on available history
  */
@@ -464,7 +457,7 @@ function formatConfigurationTime(config) {
     if (config.seconds > 0) {
         parts.push(`${config.seconds}s`);
     }
-    return parts.join(' ') || '0s';
+    return parts.join(' ');
 }
 
 /**
@@ -479,7 +472,7 @@ function handleShortcutClick(e) {
         minutes: parseInt(button.dataset.minutes) || 0,
         seconds: parseInt(button.dataset.seconds) || 0
     };
-    loadConfiguration(config);
+    applyConfiguration(config);
 }
 
 // Register service worker

@@ -165,7 +165,7 @@ header h1 {
     color: var(--dark-grey);
     font-size: 0.9rem;
     font-weight: 500;
-    border: 2px solid transparent;
+    border: 2px solid var(--light-grey);
 }
 
 .btn-shortcut:hover {
