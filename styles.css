@@ -149,6 +149,32 @@ header h1 {
     box-shadow: none;
 }
 
+/* Shortcut buttons */
+.shortcuts-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-shortcut {
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: var(--light-grey);
+    color: var(--dark-grey);
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 2px solid var(--light-grey);
+}
+
+.btn-shortcut:hover {
+    background-color: var(--primary-light);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
 /* Timer Page */
 .timer-container {
     flex: 1;
