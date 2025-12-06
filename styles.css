@@ -218,9 +218,7 @@ header h1 {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    width: 100%;
 }
 
 #timer-time {
@@ -229,12 +227,16 @@ header h1 {
     color: var(--dark-grey);
     letter-spacing: 2px;
     font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
+    line-height: 1;
+    /* Position so horizontal center of circle cuts through middle of digits */
+    transform: translateY(-50%);
 }
 
 .timer-millis {
     font-size: 1.8rem;
     font-weight: 300;
     font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
+    line-height: 1;
 }
 
 #timer-percentage {
@@ -243,6 +245,13 @@ header h1 {
     color: #bdbdbd;
     letter-spacing: 1px;
     font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
+    line-height: 1;
+    /* Position percentage below the timer digits */
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    margin-top: 0.2em;
 }
 
 /* Timer Controls */
@@ -303,14 +312,17 @@ header h1 {
     
     #timer-time {
         font-size: 2.2rem;
+        line-height: 1;
     }
     
     .timer-millis {
         font-size: 1.4rem;
+        line-height: 1;
     }
     
     #timer-percentage {
         font-size: 0.85rem;
+        line-height: 1;
     }
 }
 
@@ -332,13 +344,16 @@ header h1 {
     
     #timer-time {
         font-size: 3.5rem;
+        line-height: 1;
     }
     
     .timer-millis {
         font-size: 2.3rem;
+        line-height: 1;
     }
     
     #timer-percentage {
         font-size: 1.2rem;
+        line-height: 1;
     }
 }
