@@ -231,6 +231,7 @@ header h1 {
     letter-spacing: 2px;
     font-family: 'Courier New', Courier, 'Monaco', 'Consolas', monospace;
     line-height: 1;
+    /* Fine-tune vertical centering to account for percentage text below */
     margin-top: -0.15em;
 }
 
