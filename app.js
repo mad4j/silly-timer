@@ -24,6 +24,7 @@ const pauseBtn = document.getElementById('pause-btn');
 const pauseIcon = document.getElementById('pause-icon');
 const homeBtn = document.getElementById('home-btn');
 const resetBtn = document.getElementById('reset-btn');
+const homeResetBtn = document.getElementById('home-reset-btn');
 const timerTime = document.getElementById('timer-time');
 const timerPercentage = document.getElementById('timer-percentage');
 const progressCircle = document.getElementById('progress-ring-circle');
@@ -63,6 +64,9 @@ function init() {
     
     // Reset button
     resetBtn.addEventListener('click', resetTimer);
+    
+    // Home page reset button
+    homeResetBtn.addEventListener('click', resetHomeTimer);
     
     // Shortcut buttons
     document.querySelectorAll('.btn-shortcut').forEach(btn => {
@@ -324,6 +328,19 @@ function resetTimer() {
     
     // Set icon to play (paused state)
     pauseIcon.innerHTML = PLAY_ICON;
+}
+
+// Reset home page timer configuration to zero
+function resetHomeTimer() {
+    state.hours = 0;
+    state.minutes = 0;
+    state.seconds = 0;
+    
+    hoursDisplay.textContent = padZero(state.hours);
+    minutesDisplay.textContent = padZero(state.minutes);
+    secondsDisplay.textContent = padZero(state.seconds);
+    
+    updateStartButton();
 }
 
 // LocalStorage functions for configuration history
