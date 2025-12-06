@@ -58,6 +58,17 @@ function init() {
     // Reset button
     resetBtn.addEventListener('click', resetTimer);
     
+    // Shortcut buttons
+    document.querySelectorAll('.btn-shortcut').forEach(btn => {
+        btn.addEventListener('click', handleShortcutClick);
+    });
+    
+    // Load last used configuration
+    loadLastConfiguration();
+    
+    // Update shortcut buttons
+    updateShortcutButtons();
+    
     // Update start button state
     updateStartButton();
 }
@@ -103,6 +114,9 @@ function startTimer() {
     state.remainingSeconds = state.totalSeconds;
     
     if (state.totalSeconds === 0) return;
+    
+    // Save configuration to history
+    saveConfiguration();
     
     // Switch to timer page
     homePage.classList.remove('active');
@@ -275,6 +289,9 @@ function goHome() {
     // Reset progress ring
     progressCircle.style.strokeDashoffset = 0;
     
+    // Update shortcut buttons
+    updateShortcutButtons();
+    
     // Switch pages
     timerPage.classList.remove('active');
     homePage.classList.add('active');
@@ -302,6 +319,133 @@ function resetTimer() {
     
     // Set icon to play (paused state)
     pauseIcon.innerHTML = PLAY_ICON;
+}
+
+// LocalStorage functions for configuration history
+const STORAGE_KEY = 'timer-history';
+const MAX_HISTORY = 4;
+
+function saveConfiguration() {
+    const config = {
+        hours: state.hours,
+        minutes: state.minutes,
+        seconds: state.seconds,
+        timestamp: Date.now()
+    };
+    
+    // Skip if configuration is zero
+    if (config.hours === 0 && config.minutes === 0 && config.seconds === 0) {
+        return;
+    }
+    
+    let history = getConfigurationHistory();
+    
+    // Check if this exact configuration is already at the top
+    if (history.length > 0) {
+        const last = history[0];
+        if (last.hours === config.hours && 
+            last.minutes === config.minutes && 
+            last.seconds === config.seconds) {
+            // Update timestamp but keep it at the top
+            history[0].timestamp = config.timestamp;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            return;
+        }
+    }
+    
+    // Add new configuration to the beginning
+    history.unshift(config);
+    
+    // Keep only the last MAX_HISTORY configurations
+    if (history.length > MAX_HISTORY) {
+        history = history.slice(0, MAX_HISTORY);
+    }
+    
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+}
+
+function getConfigurationHistory() {
+    try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function loadLastConfiguration() {
+    const history = getConfigurationHistory();
+    if (history.length > 0) {
+        const last = history[0];
+        state.hours = last.hours;
+        state.minutes = last.minutes;
+        state.seconds = last.seconds;
+        
+        hoursDisplay.textContent = padZero(state.hours);
+        minutesDisplay.textContent = padZero(state.minutes);
+        secondsDisplay.textContent = padZero(state.seconds);
+    }
+}
+
+function loadConfiguration(config) {
+    state.hours = config.hours;
+    state.minutes = config.minutes;
+    state.seconds = config.seconds;
+    
+    hoursDisplay.textContent = padZero(state.hours);
+    minutesDisplay.textContent = padZero(state.minutes);
+    secondsDisplay.textContent = padZero(state.seconds);
+    
+    updateStartButton();
+}
+
+function updateShortcutButtons() {
+    const history = getConfigurationHistory();
+    
+    // Get the 3 previous configurations (skip the first one which is current)
+    const shortcuts = history.slice(1, 4);
+    
+    // Update each shortcut button
+    for (let i = 0; i < 3; i++) {
+        const btn = document.getElementById(`shortcut-${i + 1}`);
+        if (btn) {
+            if (i < shortcuts.length) {
+                const config = shortcuts[i];
+                const timeStr = formatConfigurationTime(config);
+                btn.textContent = timeStr;
+                btn.style.display = '';
+                btn.dataset.hours = config.hours;
+                btn.dataset.minutes = config.minutes;
+                btn.dataset.seconds = config.seconds;
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+    }
+}
+
+function formatConfigurationTime(config) {
+    const parts = [];
+    if (config.hours > 0) {
+        parts.push(`${config.hours}h`);
+    }
+    if (config.minutes > 0) {
+        parts.push(`${config.minutes}m`);
+    }
+    if (config.seconds > 0) {
+        parts.push(`${config.seconds}s`);
+    }
+    return parts.join(' ') || '0s';
+}
+
+function handleShortcutClick(e) {
+    const button = e.currentTarget;
+    const config = {
+        hours: parseInt(button.dataset.hours) || 0,
+        minutes: parseInt(button.dataset.minutes) || 0,
+        seconds: parseInt(button.dataset.seconds) || 0
+    };
+    loadConfiguration(config);
 }
 
 // Register service worker
