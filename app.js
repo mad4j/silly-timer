@@ -437,8 +437,8 @@ function updateShortcutButtons() {
     shortcuts.sort((a, b) => toSeconds(a) - toSeconds(b));
     
     // Fill with defaults if we don't have enough shortcuts
-    while (shortcuts.length < 3) {
-        shortcuts.push(defaultConfigs[shortcuts.length]);
+    for (let i = shortcuts.length; i < 3; i++) {
+        shortcuts.push(defaultConfigs[i]);
     }
     
     // Update each shortcut button
@@ -471,7 +471,7 @@ function formatConfigurationTime(config) {
     if (config.seconds > 0) {
         parts.push(`${config.seconds}s`);
     }
-    return parts.join(' ');
+    return parts.length > 0 ? parts.join(' ') : '0s';
 }
 
 /**
