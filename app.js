@@ -414,29 +414,43 @@ function applyConfiguration(config) {
 
 /**
  * Updates the shortcut buttons with the 3 most recent configurations (excluding current)
- * Buttons are shown or hidden based on available history
+ * Shortcuts are always visible and sorted in ascending order (shortest to longest)
+ * If insufficient history exists, default values are used: 1m, 10m, 20m
  */
 function updateShortcutButtons() {
+    // Default configurations in ascending order
+    const defaultConfigs = [
+        { hours: 0, minutes: 1, seconds: 0 },   // 1m
+        { hours: 0, minutes: 10, seconds: 0 },  // 10m
+        { hours: 0, minutes: 20, seconds: 0 }   // 20m
+    ];
+    
     const history = getConfigurationHistory();
     
     // Get the 3 previous configurations (skip the first one which is current)
-    const shortcuts = history.slice(1, 4);
+    let shortcuts = history.slice(1, 4);
+    
+    // Convert to total seconds for sorting
+    const toSeconds = (config) => config.hours * 3600 + config.minutes * 60 + config.seconds;
+    
+    // Sort in ascending order (shortest to longest)
+    shortcuts.sort((a, b) => toSeconds(a) - toSeconds(b));
+    
+    // Fill with defaults if we don't have enough shortcuts
+    while (shortcuts.length < 3) {
+        shortcuts.push(defaultConfigs[shortcuts.length]);
+    }
     
     // Update each shortcut button
     for (let i = 0; i < 3; i++) {
         const btn = document.getElementById(`shortcut-${i + 1}`);
         if (btn) {
-            if (i < shortcuts.length) {
-                const config = shortcuts[i];
-                const timeStr = formatConfigurationTime(config);
-                btn.textContent = timeStr;
-                btn.style.display = '';
-                btn.dataset.hours = config.hours;
-                btn.dataset.minutes = config.minutes;
-                btn.dataset.seconds = config.seconds;
-            } else {
-                btn.style.display = 'none';
-            }
+            const config = shortcuts[i];
+            const timeStr = formatConfigurationTime(config);
+            btn.textContent = timeStr;
+            btn.dataset.hours = config.hours;
+            btn.dataset.minutes = config.minutes;
+            btn.dataset.seconds = config.seconds;
         }
     }
 }
